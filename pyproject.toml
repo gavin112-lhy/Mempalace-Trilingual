@@ -1,0 +1,106 @@
+[project]
+name = "mempalace-trilingual"
+version = "3.3.5-tri"
+description = "三语记忆宫殿 - Trilingual AI memory palace (EN/ZH-CN/ZH-TW) with AAAK/文簡 compression"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+    {name = "MemPalace Contributors"},
+]
+keywords = [
+    "ai", "memory", "llm", "rag", "chromadb", "mcp",
+    "vector-database", "claude", "chatgpt", "embeddings",
+    "chinese", "trilingual", "compression",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "chromadb>=1.5.4,<2",
+    "pyyaml>=6.0,<7",
+    "tomli>=2.0.0; python_version < '3.11'",
+    "langdetect>=1.0.9",
+    "zhconv>=1.4.3",
+    "python-Levenshtein>=0.27.1",
+    "fuzzywuzzy>=0.18.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/mempalace/mempalace-trilingual"
+Repository = "https://github.com/mempalace/mempalace-trilingual"
+"Bug Tracker" = "https://github.com/mempalace/mempalace-trilingual/issues"
+
+[project.scripts]
+mempalace-tri = "mempalace_tri.cli:main"
+mempalace-trilingual = "mempalace_tri.cli:main"
+mempalace-tri-mcp = "mempalace_tri.mcp_server:main"
+
+[project.entry-points."mempalace_tri.backends"]
+chroma = "mempalace_tri.backends.chroma:ChromaBackend"
+
+[project.entry-points."mempalace_tri.sources"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-cov>=4.0", "ruff>=0.4.0", "psutil>=5.9"]
+spellcheck = ["autocorrect>=2.0"]
+gpu = ["onnxruntime-gpu>=1.16"]
+dml = ["onnxruntime-directml>=1.16"]
+coreml = ["onnxruntime>=1.16"]
+
+[dependency-groups]
+dev = ["pytest>=7.0", "pytest-cov>=4.0", "ruff>=0.4.0", "psutil>=5.9"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mempalace_tri"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+extend-exclude = ["benchmarks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C901"]
+ignore = ["E501"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 25
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-m 'not benchmark and not slow and not stress'"
+markers = [
+    "benchmark: scale/performance benchmark tests",
+    "slow: tests that take more than 30 seconds",
+    "stress: destructive scale tests (100K+ drawers)",
+]
+
+[tool.coverage.run]
+source = ["mempalace_tri"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+exclude_lines = [
+    "if __name__",
+    "pragma: no cover",
+]
